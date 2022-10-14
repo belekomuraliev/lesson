@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import SubmitField, StringField, IntegerField, SelectField, DateField
+from wtforms import SubmitField, StringField, IntegerField, SelectField, DateField, PasswordField
 
 from .models import Item
 
@@ -23,3 +23,9 @@ class PurchaseForm(FlaskForm):
         for item in Item.query.all():
             result.append((item.id, item.name))
         self.item_id.choices = result
+
+
+class UserForm(FlaskForm):
+    username = StringField(label='Имя пользователя')
+    password = PasswordField(label='Пароль')
+    submit = SubmitField(label='Сохранить пользователя')

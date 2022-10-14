@@ -1,9 +1,10 @@
 import datetime
 
-from flask import render_template, request
+from flask import render_template, request, redirect, url_for
 from . import app, db
-from .models import Purchase, Item
-from .forms import PurchaseForm, ItemForm
+from .models import Purchase, Item, User
+from .forms import PurchaseForm, ItemForm, UserForm
+from flask_login import login_user, logout_user, login_required
 
 
 def item_views():
@@ -41,6 +42,7 @@ def get_single_item(item_id):
     return render_template('single_item.html', item=item)
 
 
+@login_required
 def update_single_item(item_id):
     form = ItemForm()
     item = Item.query.filter_by(id=item_id).first()
@@ -58,3 +60,33 @@ def delete_single_item(item_id):
     db.session.delete(item)
     db.session.commit()
     return f"Товар №{item.id} удален"
+
+
+def register_view():
+    form = UserForm()
+    if request.method == 'POST':
+        new_username = request.form.get('username')
+        new_password = request.form.get('password')
+        new_user = User(username=new_username, password=new_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return redirect(url_for('login'))
+    return render_template('register.html', form=form)
+
+
+def login_view():
+    form = UserForm()
+    if request.method == 'POST':
+        username = request.form.get('username')
+        password = request.form.get('password')
+        user = User.query.filter_by(username=username).first()
+        if user and user.check_password(password):
+            login_user(user)
+            return redirect(url_for('item'))
+    return render_template('login.html', form=form)
+
+
+@login_required
+def logout_view():
+    logout_user()
+    return redirect(url_for('login'))

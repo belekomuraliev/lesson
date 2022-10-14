@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
+{% extends "base.html" %}
+{% block content %}
+
   <form method="POST">
-      {{form.name.label}}
-      {{form.name}}
-      {{form.price.label}}
-      {{form.price}}
-      {{form.submit}}
+      <div class="form-group">
+          {{form.name.label}}
+          {{form.name(class="form-control")}}
+          {{form.price.label}}
+          {{form.price(class="form-control")}}
+          {{form.submit(class="btn btn-primary")}}
+      </div>
   </form>
 
     <div>
@@ -18,5 +16,5 @@
             <p>{{item.name}} - {{item.price}}<p/>
         {% endfor %}
     </div>
-</body>
-</html>
+
+{% endblock %}
